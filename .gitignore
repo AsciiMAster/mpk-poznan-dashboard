@@ -1,0 +1,25 @@
+.venv/
+
+# uv
+uv.lock
+.env
+
+# GTFS
+data/static/feed/
+data/static/*.parquet
+
+# Cache
+data/realtime/__pycache__/
+__pycache__/
+*.py[cod]
+*.pyo
+
+# diskcache
+cache/
+*.diskcache
+
+.dash_cache/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
