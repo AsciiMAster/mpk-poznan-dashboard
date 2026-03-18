@@ -18,8 +18,12 @@ TIMEOUT = 10
 
 def _fetch_protobuf(filename):
     """Pobiera plik protobuf z API i zwraca sparsowany FeedMessage."""
-    resp = requests.get(BASE_URL, params={"file": filename}, timeout=TIMEOUT)
-    resp.raise_for_status()
+    try:
+        resp = requests.get(BASE_URL, params={"file": filename}, timeout=TIMEOUT)
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        logger.warning("Nie udało się pobrać %s: %s", filename, e)
+        return None
     feed = gtfs_realtime_pb2.FeedMessage()
     feed.ParseFromString(resp.content)
     return feed
@@ -33,6 +37,8 @@ def fetch_trip_updates():
         schedule_relationship, stop_time_updates (lista)
     """
     feed = _fetch_protobuf("trip_updates.pb")
+    if feed is None:
+        return []
     results = []
 
     for entity in feed.entity:
@@ -75,6 +81,8 @@ def fetch_vehicle_positions():
         bearing, speed, timestamp, current_stop_sequence
     """
     feed = _fetch_protobuf("vehicle_positions.pb")
+    if feed is None:
+        return []
     results = []
 
     for entity in feed.entity:
@@ -105,6 +113,8 @@ def fetch_feeds():
     Zwraca listę słowników w tym samym formacie co fetch_vehicle_positions.
     """
     feed = _fetch_protobuf("feeds.pb")
+    if feed is None:
+        return []
     results = []
 
     for entity in feed.entity:
@@ -134,10 +144,14 @@ def fetch_vehicle_dictionary():
 
     Zwraca listę słowników — klucze zależą od kolumn w pliku CSV.
     """
-    resp = requests.get(
-        BASE_URL, params={"file": "vehicle_dictionary.csv"}, timeout=TIMEOUT
-    )
-    resp.raise_for_status()
+    try:
+        resp = requests.get(
+            BASE_URL, params={"file": "vehicle_dictionary.csv"}, timeout=TIMEOUT
+        )
+        resp.raise_for_status()
+    except requests.exceptions.RequestException as e:
+        logger.warning("Nie udało się pobrać vehicle_dictionary.csv: %s", e)
+        return []
 
     text = resp.text
     reader = csv.DictReader(io.StringIO(text))
