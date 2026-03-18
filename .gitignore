@@ -7,6 +7,8 @@ uv.lock
 # GTFS
 data/static/feed/
 data/static/*.parquet
+data/realtime/*.pb
+data/realtime/*.csv
 
 # Cache
 data/realtime/__pycache__/
@@ -23,3 +25,5 @@ cache/
 .idea/
 .DS_Store
 Thumbs.db
+.claude
+claude.md

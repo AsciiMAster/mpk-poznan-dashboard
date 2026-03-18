@@ -19,5 +19,144 @@ h1 {
 
 .map-container {
     padding: 0 40px 40px 40px;
+    display: flex;
+    gap: 20px;
+}
+
+.map-wrapper {
+    flex: 1;
+    min-width: 0;
+}
+
+.stop-info-panel {
+    width: 320px;
+    max-height: 80vh;
+    overflow-y: auto;
+    background-color: #222;
+    border-radius: 12px;
+    border: 2px solid #2c2e33;
+    padding: 20px;
+    flex-shrink: 0;
+}
+
+.stop-info-panel:empty {
+    display: none;
+}
+
+.stop-info-title {
+    color: #4e9040;
+    font-size: 1.3rem;
+    margin: 0 0 12px 0;
+}
+
+.route-item {
+    padding: 6px 0;
+    border-bottom: 1px solid #333;
+    font-size: 1rem;
+}
+
+.route-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #fff;
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-width: 32px;
+    text-align: center;
+}
+
+.route-name {
+    color: #ccc;
+}
+
+.route-type {
+    color: #888;
+    font-size: 0.85rem;
+}
+
+.stop-info-empty {
+    color: #888;
+}
+
+.delay-badge {
+    font-weight: 600;
+    font-size: 0.85rem;
+    margin-left: 6px;
+}
+
+.delay-late {
+    color: #e74c3c;
+}
+
+.delay-early {
+    color: #3498db;
+}
+
+.delay-ok {
+    color: #4e9040;
+}
+
+/* Rozkład jazdy */
+.timetable-title {
+    margin-top: 20px;
+}
+
+.dep-item {
+    padding: 5px 0;
+    border-bottom: 1px solid #333;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.dep-time {
+    font-weight: 700;
+    color: #e4e5e8;
+    min-width: 40px;
+    font-size: 1rem;
+}
+
+.dep-headsign {
+    color: #aaa;
+    font-size: 0.9rem;
+}
+
+/* Panel pojazdu */
+.vehicle-detail {
+    padding: 4px 0;
+    color: #ccc;
+    font-size: 1rem;
+}
+
+.amenity-title {
+    margin-top: 16px;
+}
+
+.amenity-item {
+    padding: 3px 0;
+    font-size: 0.95rem;
+    color: #ccc;
+}
+
+.amenity-icon {
+    font-weight: 700;
+    margin-right: 4px;
+}
+
+.amenity-yes {
+    color: #4e9040;
+}
+
+.amenity-no {
+    color: #666;
+}
+
+/* Ikona pojazdu — nadpisanie domyślnych stylów Leaflet DivIcon */
+.vehicle-icon {
+    background: none !important;
+    border: none !important;
 }
 
