@@ -1,19 +1,42 @@
-# Pobieranie danych o przystankach z pliku GeoJSON
+# Pobieranie danych o przystankach z bazy danych
 
 import json
-from pathlib import Path
-
-DATA_DIR = Path(__file__).parent
+from data.db import get_connection
 
 
 def get_stops_geojson():
-    """Wczytuje przystanki z pliku GeoJSON i dodaje tooltipy."""
-    with open(DATA_DIR / "stops.geojson", "r", encoding="utf-8") as f:
-        stops = json.load(f)
+    """Pobiera przystanki z bazy i zwraca jako GeoJSON FeatureCollection."""
+    conn = get_connection()
+    cur = conn.cursor()
 
-    for feature in stops.get("features", []):
-        props = feature.get("properties", {})
-        if "stop_name" in props:
-            props["tooltip"] = props["stop_name"]
+    cur.execute("""
+        SELECT 
+            s.stop_id, 
+            s.stop_name, 
+            ST_AsGeoJSON(s.geom) as geom, 
+            MIN(r.route_type) as route_type 
+        FROM stops s 
+        JOIN route_stops rs ON s.stop_id = rs.stop_id 
+        JOIN routes r ON rs.route_id = r.route_id 
+        GROUP BY s.stop_id, s.stop_name, s.geom
+        HAVING s.geom IS NOT NULL
+    """)
 
-    return stops
+    features = []
+    for row in cur.fetchall():
+        stop_id, stop_name, geom_json, route_type = row
+        features.append({
+            "type": "Feature",
+            "geometry": json.loads(geom_json),
+            "properties": {
+                "stop_id": stop_id,
+                "stop_name": stop_name,
+                "route_type": route_type,
+                "tooltip": stop_name,
+            },
+        })
+
+    cur.close()
+    conn.close()
+
+    return {"type": "FeatureCollection", "features": features}
