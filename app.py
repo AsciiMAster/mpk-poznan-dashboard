@@ -1,36 +1,17 @@
-from dash import Dash, html
-import dash_leaflet as dl
-import json
+# Punkt wejścia aplikacji MPK Poznań Dashboard
+
+from dash import Dash
+from data.stops import get_stops_geojson
+from data.routes import get_routes_geojson
+from layout.main import create_layout
 
 app = Dash(__name__)
 
-with open('data/stops.geojson', 'r', encoding='utf-8') as f:
-    stops_geojson = json.load(f)
+# Pobranie danych
+stops_geojson = get_stops_geojson()
+routes_geojson = get_routes_geojson()
 
-# dodanie tooltipów do przystanków
-for feature in stops_geojson.get('features', []):
-    if 'stop_name' in feature.get('properties', {}):
-        feature['properties']['tooltip'] = feature['properties']['stop_name']
+app.layout = create_layout(stops_geojson, routes_geojson)
 
-app.layout = html.Div([
-    html.H1("MPK Poznań Dashboard"),
-    html.Div(
-        dl.Map(
-            [
-                dl.TileLayer(),
-                dl.GeoJSON(
-                    data=stops_geojson,
-                    id="stops",
-                    cluster=True
-                )
-            ],
-            style={'width': '100%', 'height': '80vh', 'border-radius': '12px', 'border': '2px solid #2c2e33'},
-            center=[52.40, 16.92],
-            zoom=11
-        ),
-        className="map-container"
-    )
-])
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=True)
