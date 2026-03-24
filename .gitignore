@@ -25,5 +25,5 @@ cache/
 .idea/
 .DS_Store
 Thumbs.db
-.claude
-claude.md
+.claude/
+CLAUDE.md
