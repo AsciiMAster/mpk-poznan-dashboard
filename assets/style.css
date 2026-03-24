@@ -1,26 +1,120 @@
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+    box-sizing: border-box;
+}
+
+/* ── Zmienne kolorów — tryb jasny (domyślny) ── */
+:root, [data-theme="light"] {
+    --bg: #f5f5f7;
+    --bg-panel: #ffffff;
+    --bg-header: #ffffff;
+    --border: #e0e0e0;
+    --border-subtle: #eee;
+    --text: #1a1a1a;
+    --text-secondary: #555;
+    --text-muted: #888;
+    --accent: #3a8a2e;
+    --scrollbar: #ccc;
+    --leaflet-bg: #f0f0f0;
+    --zoom-bg: #fff;
+    --zoom-text: #333;
+    --zoom-hover: #f0f0f0;
+    --zoom-border: #ccc;
+    --amenity-no: #bbb;
+    --delay-late-bg: rgba(239, 83, 80, 0.1);
+    --delay-early-bg: rgba(66, 165, 245, 0.1);
+    --delay-ok-bg: rgba(90, 173, 75, 0.12);
+}
+
+/* ── Zmienne kolorów — tryb ciemny ── */
+[data-theme="dark"] {
+    --bg: #111214;
+    --bg-panel: #18191c;
+    --bg-header: #18191c;
+    --border: #2a2b2f;
+    --border-subtle: #1e1f23;
+    --text: #e4e5e8;
+    --text-secondary: #aaa;
+    --text-muted: #666;
+    --accent: #5aad4b;
+    --scrollbar: #333;
+    --leaflet-bg: #1a1a1a;
+    --zoom-bg: #1e1f23;
+    --zoom-text: #ccc;
+    --zoom-hover: #2a2b2f;
+    --zoom-border: #333;
+    --amenity-no: #444;
+    --delay-late-bg: rgba(239, 83, 80, 0.1);
+    --delay-early-bg: rgba(66, 165, 245, 0.1);
+    --delay-ok-bg: rgba(90, 173, 75, 0.1);
+}
 
 body {
-    background-color: #1a1a1a;
-    color: #e4e5e8;
-    font-family: 'Rajdhani', sans-serif;
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
     margin: 0;
     padding: 0;
 }
 
-h1 {
-    text-align: center;
-    font-weight: 600;
-    font-size: 3.5rem;
-    padding: 20px 0;
-    letter-spacing: 2px;
-    color: #4e9040;
+/* ── Nagłówek ── */
+.app-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 20px;
+    background: var(--bg-header);
+    border-bottom: 1px solid var(--border);
 }
 
-.map-container {
-    padding: 0 40px 40px 40px;
+.app-header h1 {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--text);
+    margin: 0;
+    letter-spacing: 0.3px;
+}
+
+.app-header .accent {
+    color: var(--accent);
+}
+
+.header-subtitle {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+/* Przycisk zmiany motywu */
+.theme-toggle {
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 5px 12px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 500;
     display: flex;
-    gap: 20px;
+    align-items: center;
+    gap: 6px;
+    transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+
+.theme-toggle:hover {
+    background: var(--border-subtle);
+    color: var(--text);
+}
+
+/* ── Kontener mapy ── */
+.map-container {
+    padding: 0;
+    display: flex;
+    height: calc(100vh - 45px);
+    position: relative;
 }
 
 .map-wrapper {
@@ -28,13 +122,13 @@ h1 {
     min-width: 0;
 }
 
+/* ── Panel boczny ── */
 .stop-info-panel {
-    width: 320px;
-    max-height: 80vh;
+    width: 340px;
+    max-height: calc(100vh - 45px);
     overflow-y: auto;
-    background-color: #222;
-    border-radius: 12px;
-    border: 2px solid #2c2e33;
+    background-color: var(--bg-panel);
+    border-left: 1px solid var(--border);
     padding: 20px;
     flex-shrink: 0;
 }
@@ -43,120 +137,189 @@ h1 {
     display: none;
 }
 
-.stop-info-title {
-    color: #4e9040;
-    font-size: 1.3rem;
-    margin: 0 0 12px 0;
+/* Scrollbar */
+.stop-info-panel::-webkit-scrollbar {
+    width: 5px;
 }
 
+.stop-info-panel::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.stop-info-panel::-webkit-scrollbar-thumb {
+    background: var(--scrollbar);
+    border-radius: 4px;
+}
+
+/* ── Tytuły sekcji ── */
+.stop-info-title {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 10px 0;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--border);
+}
+
+/* ── Trasy ── */
 .route-item {
-    padding: 6px 0;
-    border-bottom: 1px solid #333;
-    font-size: 1rem;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.route-item:last-child {
+    border-bottom: none;
 }
 
 .route-badge {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     padding: 2px 8px;
-    border-radius: 4px;
+    border-radius: 6px;
     color: #fff;
-    font-weight: 600;
-    font-size: 0.95rem;
-    min-width: 32px;
+    font-weight: 700;
+    font-size: 0.8rem;
+    min-width: 36px;
     text-align: center;
+    line-height: 1.4;
 }
 
 .route-name {
-    color: #ccc;
+    color: var(--text-secondary);
+    font-size: 0.82rem;
 }
 
 .route-type {
-    color: #888;
-    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-size: 0.75rem;
 }
 
 .stop-info-empty {
-    color: #888;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-align: center;
+    padding: 32px 0;
 }
 
+/* ── Opóźnienia ── */
 .delay-badge {
     font-weight: 600;
-    font-size: 0.85rem;
-    margin-left: 6px;
+    font-size: 0.75rem;
+    margin-left: auto;
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 .delay-late {
-    color: #e74c3c;
+    color: #ef5350;
+    background: var(--delay-late-bg);
 }
 
 .delay-early {
-    color: #3498db;
+    color: #42a5f5;
+    background: var(--delay-early-bg);
 }
 
 .delay-ok {
-    color: #4e9040;
+    color: var(--accent);
+    background: var(--delay-ok-bg);
 }
 
-/* Rozkład jazdy */
+/* ── Rozkład jazdy ── */
 .timetable-title {
     margin-top: 20px;
 }
 
 .dep-item {
-    padding: 5px 0;
-    border-bottom: 1px solid #333;
-    font-size: 0.95rem;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+    font-size: 0.85rem;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
+}
+
+.dep-item:last-child {
+    border-bottom: none;
 }
 
 .dep-time {
     font-weight: 700;
-    color: #e4e5e8;
+    color: var(--text);
     min-width: 40px;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    font-variant-numeric: tabular-nums;
 }
 
 .dep-headsign {
-    color: #aaa;
-    font-size: 0.9rem;
+    color: var(--text-muted);
+    font-size: 0.8rem;
 }
 
-/* Panel pojazdu */
+/* ── Panel pojazdu ── */
 .vehicle-detail {
-    padding: 4px 0;
-    color: #ccc;
-    font-size: 1rem;
+    padding: 6px 0;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    border-bottom: 1px solid var(--border-subtle);
+}
+
+.vehicle-detail:last-of-type {
+    border-bottom: none;
 }
 
 .amenity-title {
-    margin-top: 16px;
+    margin-top: 20px;
 }
 
 .amenity-item {
-    padding: 3px 0;
-    font-size: 0.95rem;
-    color: #ccc;
+    padding: 5px 0;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    gap: 4px;
 }
 
 .amenity-icon {
     font-weight: 700;
-    margin-right: 4px;
+    font-size: 0.85rem;
 }
 
 .amenity-yes {
-    color: #4e9040;
+    color: var(--accent);
 }
 
 .amenity-no {
-    color: #666;
+    color: var(--amenity-no);
 }
 
-/* Ikona pojazdu — nadpisanie domyślnych stylów Leaflet DivIcon */
+/* ── Ikona pojazdu — nadpisanie domyślnych stylów Leaflet DivIcon ── */
 .vehicle-icon {
     background: none !important;
     border: none !important;
 }
 
+/* ── Leaflet overrides ── */
+.leaflet-container {
+    background: var(--leaflet-bg);
+}
+
+.leaflet-control-zoom a {
+    background: var(--zoom-bg) !important;
+    color: var(--zoom-text) !important;
+    border-color: var(--zoom-border) !important;
+}
+
+.leaflet-control-zoom a:hover {
+    background: var(--zoom-hover) !important;
+    color: var(--text) !important;
+}

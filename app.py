@@ -16,6 +16,7 @@ app.layout = create_layout(stops, routes_geojson)
 # Rejestracja callbacków (importy wystarczą, Dash je wykryje)
 import callbacks.stops  # noqa: F401, E402
 import callbacks.vehicles  # noqa: F401, E402
+import callbacks.theme  # noqa: F401, E402
 
 if __name__ == "__main__":
     app.run(debug=True)
