@@ -1,4 +1,4 @@
-# Warstwa mapy z przystankami — indywidualne markery z ikonami SVG
+# Warstwa mapy z przystankami — markery divIcon stylowane w CSS
 
 import dash_leaflet as dl
 
@@ -7,18 +7,25 @@ def create_stops_layer(stops):
     """Tworzy warstwę z markerami przystanków (bez klastrowania)."""
     markers = []
     for stop in stops:
-        icon_url = (
-            "/assets/icons/tram.svg"
+        glyph_class = (
+            "stop-icon__glyph--rail-light"
             if stop["stop_type"] == "tram"
-            else "/assets/icons/bus.svg"
+            else "stop-icon__glyph--bus"
+        )
+        icon_class = (
+            "stop-icon stop-icon--tram"
+            if stop["stop_type"] == "tram"
+            else "stop-icon stop-icon--bus"
         )
         markers.append(
-            dl.Marker(
+            dl.DivMarker(
                 position=[stop["lat"], stop["lon"]],
-                icon={
-                    "iconUrl": icon_url,
-                    "iconSize": [24, 24],
-                    "iconAnchor": [12, 12],
+                iconOptions={
+                    "className": "stop-marker-wrapper",
+                    "html": f'<div class="{icon_class}"><span class="stop-icon__glyph {glyph_class}"></span></div>',
+                    "iconSize": [14, 14],
+                    "iconAnchor": [9, 9],
+                    "popupAnchor": [0, -9],
                 },
                 children=[dl.Tooltip(stop["stop_name"])],
                 id={"type": "stop-marker", "stop_id": stop["stop_id"]},

@@ -26,7 +26,13 @@ def get_upcoming_departures(stop_id, limit=20):
         JOIN routes r ON t.route_id = r.route_id
         JOIN universal_calendar uc ON t.service_id = uc.service_id
         WHERE st.stop_id = %s
-          AND uc.date = CURRENT_DATE
+                    AND uc.date = (
+                            SELECT COALESCE(
+                                    MAX(date) FILTER (WHERE date <= CURRENT_DATE),
+                                    MAX(date)
+                            )
+                            FROM universal_calendar
+                    )
           AND st.departure_time >= %s
         ORDER BY st.departure_time
         LIMIT %s

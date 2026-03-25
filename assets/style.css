@@ -86,6 +86,30 @@ body {
     font-weight: 400;
 }
 
+.stop-search {
+    min-width: 280px;
+    max-width: 420px;
+    width: 34vw;
+}
+
+.stop-search .Select-control,
+.stop-search .Select-menu-outer,
+.stop-search .Select-input > input,
+.stop-search .Select-placeholder,
+.stop-search .Select-value-label {
+    background-color: var(--bg-panel) !important;
+    color: var(--text) !important;
+}
+
+.stop-search .Select-control {
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+}
+
+.stop-search .Select-menu-outer {
+    border: 1px solid var(--border) !important;
+}
+
 /* Przycisk zmiany motywu */
 .theme-toggle {
     margin-left: auto;
@@ -244,7 +268,7 @@ body {
     display: flex;
     align-items: center;
     gap: 8px;
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
 }
 
 .dep-item:last-child {
@@ -262,6 +286,62 @@ body {
 .dep-headsign {
     color: var(--text-muted);
     font-size: 0.8rem;
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dep-live-label {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 7px;
+    border-radius: 10px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: #145b33;
+    background: rgba(90, 173, 75, 0.18);
+    border: 1px solid rgba(90, 173, 75, 0.35);
+    flex-shrink: 0;
+}
+
+[data-theme="dark"] .dep-live-label {
+    color: #9ae585;
+    background: rgba(90, 173, 75, 0.2);
+    border-color: rgba(90, 173, 75, 0.45);
+}
+
+.dep-time-eta {
+    margin-left: auto;
+    font-weight: 700;
+    color: var(--text);
+    font-size: 0.84rem;
+    min-width: 70px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    flex-shrink: 0;
+}
+
+.dep-item .delay-badge {
+    margin-left: 0;
+    flex-shrink: 0;
+}
+
+.dep-item-delayed {
+    background: rgba(239, 83, 80, 0.08);
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.dep-item-early {
+    background: rgba(66, 165, 245, 0.08);
+    border-radius: 8px;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 /* ── Panel pojazdu ── */
@@ -306,6 +386,47 @@ body {
 .vehicle-icon {
     background: none !important;
     border: none !important;
+}
+
+/* ── Ikony przystanków — tło sterowane CSS ── */
+.stop-marker-wrapper {
+    background: none !important;
+    border: none !important;
+}
+
+.stop-icon {
+    width: 14px;
+    height: 14px;
+    border: none;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.35);
+}
+
+.stop-icon--bus {
+    background: #2f9e44;
+}
+
+.stop-icon--tram {
+    background: #1f78c1;
+}
+
+.stop-icon__glyph {
+    width: 10px;
+    height: 10px;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+
+.stop-icon__glyph--bus {
+    background-image: url("/assets/icons/maki-bus.svg");
+}
+
+.stop-icon__glyph--rail-light {
+    background-image: url("/assets/icons/maki-rail-light.svg");
 }
 
 /* ── Leaflet overrides ── */

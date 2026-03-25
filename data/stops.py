@@ -55,18 +55,41 @@ def get_stop_routes(stop_id):
     cur = conn.cursor()
 
     cur.execute("""
-        SELECT DISTINCT
+        SELECT
             r.route_id,
             r.route_short_name,
-            r.route_long_name,
+            COALESCE(dir.headsign, r.route_long_name) AS route_long_name,
             r.route_color,
             rt.route_type_name
-        FROM route_stops rs
-        JOIN routes r ON rs.route_id = r.route_id
+        FROM (
+            SELECT DISTINCT rs.route_id
+            FROM route_stops rs
+            WHERE rs.stop_id = %s
+        ) srs
+        JOIN routes r ON srs.route_id = r.route_id
         LEFT JOIN route_type rt ON r.route_type = rt.route_type
-        WHERE rs.stop_id = %s
+        LEFT JOIN LATERAL (
+            SELECT COALESCE(
+                NULLIF(st.stop_headsign, ''),
+                NULLIF(t.trip_headsign, '')
+            ) AS headsign
+            FROM stop_times st
+            JOIN trips t ON st.trip_id = t.trip_id
+            JOIN universal_calendar uc ON t.service_id = uc.service_id
+            WHERE st.stop_id = %s
+              AND t.route_id = r.route_id
+              AND uc.date = (
+                  SELECT COALESCE(
+                      MAX(date) FILTER (WHERE date <= CURRENT_DATE),
+                      MAX(date)
+                  )
+                  FROM universal_calendar
+              )
+            ORDER BY st.departure_time
+            LIMIT 1
+        ) dir ON TRUE
         ORDER BY rt.route_type_name, r.route_short_name
-    """, (stop_id,))
+    """, (stop_id, stop_id))
 
     routes = []
     for row in cur.fetchall():
