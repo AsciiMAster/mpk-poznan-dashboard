@@ -94,8 +94,12 @@ def get_vehicles_geojson():
     return {"type": "FeatureCollection", "features": features}
 
 
-def get_vehicles_geojson_split():
-    """Zwraca osobne FeatureCollection dla autobusów i tramwajów."""
+def get_vehicles_geojson_split(bounds=None):
+    """Zwraca osobne FeatureCollection dla autobusów i tramwajów.
+
+    bounds — opcjonalna krotka (south, west, north, east) do filtrowania
+    pojazdów poza widocznym obszarem mapy.
+    """
     positions = fetch_vehicle_positions()
     route_map = _ensure_route_map()
     trip_delay_map = _get_trip_delay_map()
@@ -104,6 +108,11 @@ def get_vehicles_geojson_split():
     tram_features = []
 
     for v in positions:
+        if bounds is not None:
+            south, west, north, east = bounds
+            if not (south <= v["lat"] <= north and west <= v["lon"] <= east):
+                continue
+
         route_info = route_map.get(v["route_id"], {})
         vehicle_type = "tram" if route_info.get("route_type") == 0 else "bus"
 
@@ -114,15 +123,12 @@ def get_vehicles_geojson_split():
                 "coordinates": [v["lon"], v["lat"]],
             },
             "properties": {
-                "vehicle_id": v["vehicle_id"],
                 "label": v["label"],
-                "route_id": v["route_id"],
                 "trip_id": v["trip_id"],
                 "route_short_name": route_info.get("short_name", v["route_id"]),
                 "route_color": route_info.get("color", "#888888"),
                 "vehicle_type": vehicle_type,
                 "speed": v.get("speed"),
-                "bearing": v.get("bearing"),
                 "delay_sec": trip_delay_map.get(v.get("trip_id")),
                 "tooltip": f"{route_info.get('short_name', '?')} ({vehicle_type})",
             },

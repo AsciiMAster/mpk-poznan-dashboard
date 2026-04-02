@@ -29,7 +29,7 @@ _point_to_layer = assign("""function(feature, latlng) {
     return L.marker(latlng, {icon: icon, zIndexOffset: 1000});
 }""")
 
-# Po kliknięciu w pojazd — zapisz properties do hideout, aby callback Dash mógł je odczytać
+# Po kliknięciu w pojazd zapisz properties do hideout, aby callback Dash mógł je odczytać
 _on_each_feature = assign("""function(feature, layer, context) {
     var props = feature.properties;
     layer.bindTooltip(props.tooltip);

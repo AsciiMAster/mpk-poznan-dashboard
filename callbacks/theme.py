@@ -17,7 +17,6 @@ TILE_DARK = "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
 def toggle_theme(n_clicks, current_theme):
     """Przełącza motyw jasny/ciemny."""
     if n_clicks == 0 or n_clicks is None:
-        # Początkowy stan — jasny
         return "light", "light", TILE_LIGHT, "\u2600\ufe0f Jasny"
 
     if current_theme == "light":
